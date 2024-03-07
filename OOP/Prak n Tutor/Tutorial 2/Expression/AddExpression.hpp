@@ -2,6 +2,7 @@
 #define _ADDEXPRESSION_HPP_
 
 #include "Expression.hpp"
+
 class AddExpression : public BinaryExpression {
     public:
         AddExpression(Expression* x, Expression* y);

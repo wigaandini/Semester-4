@@ -2,8 +2,8 @@
 #include "NegativeExpression.hpp"
 using namespace std;
 
-NegativeExpression::NegativeExpression(Expression* x) : UnaryExpression(x) {}
+NegativeExpression::NegativeExpression(Expression *x) : UnaryExpression(x) {}
 
-int NegativeExpression::solve(){
-    return x->solve() * -1;
+int NegativeExpression::solve() {
+    return this->x->solve() * (-1);
 }

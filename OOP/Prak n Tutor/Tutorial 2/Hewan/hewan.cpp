@@ -1,4 +1,5 @@
 #include "Hewan.h"
+
 int main() {
 	Hewan *array_hewan[3];
 	Hewan a("a");
@@ -25,27 +26,3 @@ int main() {
 	delete d;
 	return 0;
 }
-// Hewan ini namanya a
-// Hewan ini namanya b
-// Anjing ini namanya c
-// Anjing ini namanya c
-// Kucing anggora ini namanya d. Pemiliknya adalah 1
-// Anjing bulldog ini namanya e. Pemiliknya adalah 2
-// Kucing anggora ini namanya f. Pemiliknya adalah 3
-// Anjing bulldog ini namanya g. Pemiliknya adalah 4
-// Anjing mati e
-// Hewan mati e
-// Kucing anggora mati d
-// Kucing mati d
-// Hewan mati d
-// Anjing bulldog mati g
-// Anjing mati g
-// Hewan mati g
-// Kucing anggora mati f
-// Kucing mati f
-// Hewan mati f
-// Anjing mati c
-// Hewan mati c
-// Kucing mati b
-// Hewan mati b
-// Hewan mati a

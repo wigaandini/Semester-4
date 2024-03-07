@@ -1,5 +1,5 @@
-#ifndef _SUBSTRACTEXPRESSION_HPP_
-#define _SUBSTRACTEXPRESSION_HPP_
+#ifndef _SUBTRACTEXPRESSION_HPP_
+#define _SUBTRACTEXPRESSION_HPP_
 
 #include "Expression.hpp"
 
