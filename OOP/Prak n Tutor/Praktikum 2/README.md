@@ -1,1 +1,1 @@
-![Soal](Soal Prak 2.jpg)
+![Soal](Soal-Prak-2.jpeg)
