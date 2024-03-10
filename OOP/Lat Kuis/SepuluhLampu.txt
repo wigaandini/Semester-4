@@ -1,0 +1,99 @@
+#include <string>
+#include "Lampu.h"
+#ifndef _SEPULUHLAMPU_HPP_
+#define _SEPULUHLAMPU_HPP_
+using namespace std;
+
+
+class Deret_Lampu {
+    private:
+        Lampu *array_Lampu;
+        int size;
+        int Neff;
+
+    public:
+        Deret_Lampu();
+        Deret_Lampu(int);
+        Deret_Lampu(const Deret_Lampu &);
+        ~Deret_Lampu();
+        Deret_Lampu &operator+(const Lampu &);
+        Deret_Lampu &operator*=(const Deret_Lampu &);
+        void atur_nyala(int);
+        void PrintAll();
+};
+
+#endif
+
+
+Deret_Lampu::Deret_Lampu() {
+    this->size = 100;
+    this->Neff = 10;
+    this->array_Lampu = new Lampu(this->size);
+}
+
+Deret_Lampu::Deret_Lampu(int s) {
+    this->size = s;
+    this->Neff = 10;
+    this->array_Lampu = new Lampu(this->size);
+    for (int i = 0; i < s ; i++) {
+        Lampu l = Lampu(i+1, false);
+        this->array_Lampu[i] = l; 
+    }
+}
+
+Deret_Lampu::Deret_Lampu(const Deret_Lampu &sl) {
+    this->size = sl.size;
+    this->Neff = sl.Neff;
+    this->array_Lampu = new Lampu(this->size);
+    for (int i = 0; i < sl.Neff ; i++) {
+        this->array_Lampu[i] = sl.array_Lampu[i]; 
+    }
+}
+
+Deret_Lampu::~Deret_Lampu(){
+    delete[] this->array_Lampu;
+}
+
+Deret_Lampu & Deret_Lampu::operator=(const Deret_Lampu &sl) {
+
+}
+
+Deret_Lampu & Deret_Lampu::operator+(const Lampu &l) {
+    if (this->Neff < this->size) {
+        array_Lampu[Neff] = l;
+        Neff ++;
+    }
+    return *this;
+}
+
+Deret_Lampu & Deret_Lampu::operator*=(const Deret_Lampu &sl) {
+    this->size *= 2;
+    this->Neff *= 2;
+    int i;
+    for (i = 0; i < Neff/2; i++) {
+        this->array_Lampu[i] = sl.array_Lampu[i];
+    }
+    for (i = Neff/2; i < Neff; i++) {
+        Lampu l = Lampu(i+1, false);
+        this->array_Lampu[i] = l; 
+    }
+    return *this;
+}
+
+void Deret_Lampu::atur_nyala(int no) {
+    for (int i = 0; i < this->Neff; i++) {
+        if (this->array_Lampu[i].get_info() && n != 10 && n != 1) {
+            this->array_Lampu[i].set_mati();
+        }
+        else {
+            this->array_Lampu[i].set_nyala();
+        }
+    }
+}
+
+void Deret_Lampu::PrintAll() {
+    for(int i = 0; i < this->Neff; i++){
+        this->array_Lampu[i].PrintInfo();
+    }
+    cout << "\n";
+}

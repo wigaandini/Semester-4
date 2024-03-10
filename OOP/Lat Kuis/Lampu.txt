@@ -1,0 +1,56 @@
+#include <string>
+#include <iostream>
+#ifndef _LAMPU_HPP_
+#define _LAMPU_HPP_
+using namespace std;
+
+class Lampu {
+    private:
+        int no_lampu;
+        bool condition;
+    public:
+        Lampu();
+        Lampu(int, bool);
+        Lampu(const Lampu&);
+        Lampu& operator=(const Lampu&);
+        ~Lampu();
+        void set_nyala();
+        void set_mati();
+        bool get_info();
+        void PrintInfo() const;
+};
+
+#endif
+
+
+Lampu::Lampu() {
+    this->no_lampu = 0;
+    this->condition = false;
+}
+
+Lampu::Lampu(int no, bool nyala) {
+    this->no_lampu = no;
+    this->condition = nyala;
+}
+
+Lampu::Lampu(const Lampu &l) {
+    this->no_lampu = l.no_lampu;
+    this->condition = l.condition;
+}
+
+void Lampu::set_nyala() {
+    this->condition = true;
+}
+
+void Lampu::set_mati() {
+    this->condition = false;
+}
+
+bool Lampu::get_info() {
+    return this->condition;
+}
+
+void Lampu::PrintInfo() const {
+    cout << "Nomor Lampu: " << this->no_lamp << endl;
+    cout << "Status: " << (this->condition ? "Nyala" : "Mati") << endl;
+}
