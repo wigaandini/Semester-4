@@ -35,4 +35,4 @@ void Hero::heal(int x) {
 
 void Hero::useSkill() {
     cout << "hero is using a skill" << hp << " " << mp << endl;
-}
+}   
