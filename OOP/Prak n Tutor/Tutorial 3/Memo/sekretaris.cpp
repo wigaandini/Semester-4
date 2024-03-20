@@ -65,23 +65,21 @@ void Sekretaris::buatMemo(string pesan, string untuk) {
         pakaiTinta(pesan.length());
         pakaiEnergi();
         this->memoLength++;
-        Memo* temp = new Memo[this->memoLength];
+        Memo* newMemo = new Memo[this->memoLength];
         for (int i = 0; i < this->memoLength - 1; i++) {
-            temp[i] = this->memo[i];
+            newMemo[i] = this->memo[i];
         }
-        temp[this->memoLength - 1] = memo;
+        newMemo[this->memoLength - 1] = memo;
         delete[] this->memo;
-        this->memo = temp;
+        this->memo = newMemo;
         cout << "Memo [" << this->memoLength << "] untuk " << untuk << " berhasil dibuat" << endl;
     }
     catch(KertasHabisException e){
-        // batalPakaiTinta(pesan.length());
-        // batalPakaiEnergi();
+
         cout << e.what() << ", segera isi kertas" << endl;
     }
     catch(TintaKurangException e){
         batalPakaiKertas();
-        // batalPakaiEnergi();
         cout << e.what() << ", segera isi tinta" << endl;
     }
     catch(EnergiHabisException e){
@@ -90,9 +88,6 @@ void Sekretaris::buatMemo(string pesan, string untuk) {
         cout << e.what() << ", segera istirahat" << endl;
     }
     catch(PesanKepanjanganException e){
-        // batalPakaiKertas();
-        // batalPakaiTinta(pesan.length());
-        // batalPakaiEnergi();
         cout << e.what() << ", perpendek pesannya" << endl;
     }
 }
@@ -104,10 +99,10 @@ void Sekretaris::buatMemo(string pesan, string untuk) {
     KertasHabisException dan tidak ada kertas yang digunakan.
 */
 void Sekretaris::pakaiKertas() {
-    if (kertas <= 0) {
+    if (this->kertas <= 0) {
         throw KertasHabisException();
     }
-    kertas--;
+    this->kertas--;
 }
 
 /*
@@ -117,10 +112,10 @@ void Sekretaris::pakaiKertas() {
     TintaKurangException dan tidak ada tinta yang digunakan.
 */
 void Sekretaris::pakaiTinta(int num) {
-    if (tinta < num) {
+    if (this->tinta < num) {
         throw TintaKurangException();
     }
-    tinta -= num;
+    this->tinta -= num;
 }
 
 /*
@@ -130,10 +125,10 @@ void Sekretaris::pakaiTinta(int num) {
     EnergiHabisException dan tidak ada energi yang digunakan.
 */
 void Sekretaris::pakaiEnergi() {
-    if (energi <= 0) {
+    if (this->energi <= 0) {
         throw EnergiHabisException();
     }
-    energi--;
+    this->energi--;
 }
 
 /*
@@ -147,35 +142,35 @@ void Sekretaris::batalPakaiKertas() {
     Membatalkan penggunaan tinta sebanyak num.
 */
 void Sekretaris::batalPakaiTinta(int num) {
-    tinta += num;
+    this->tinta += num;
 }
 
 /*
     Membatalkan penggunaan 1 energi.
 */
 void Sekretaris::batalPakaiEnergi() {
-    energi++;
+    this->energi++;
 }
 
 /*
     Menambahkan jumlah tinta sebanyak num.
 */
 void Sekretaris::isiTinta(int num) {
-    tinta += num;
+    this->tinta += num;
 }
 
 /*
     Menambahkan jumlah kertas sebanyak num.
 */
 void Sekretaris::isiKertas(int num) {
-    kertas += num;
+    this->kertas += num;
 }
 
 /*
     Istirahat mengembalikan energi menjadi maksimum.
 */
 void Sekretaris::istirahat() {
-    energi = ENERGI_MAX;
+    this->energi = ENERGI_MAX;
 }
 
 /*

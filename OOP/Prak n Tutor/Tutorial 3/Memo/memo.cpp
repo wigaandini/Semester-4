@@ -1,5 +1,7 @@
+#include <string>
+#include "exception.h"
 #include "memo.h"
-#include <iostream>
+using namespace std;
 
 /* 
     Membuat objek Memo dengan 'pesan' dan 'untuk' kosong
@@ -11,12 +13,12 @@ Memo::Memo() {
 
 /* 
     Membuat objek Memo dengan isi sesuai yang diberikan.
-    
+
     Jika panjang pesan melebihi panjang maksimum, maka
     metode ini melemparkan PesanKepanjanganException.
 */
 Memo::Memo(string pesan, string untuk) {
-    if(pesan.length() > PESAN_MAX){
+    if (pesan.length() > PESAN_MAX) {
         throw PesanKepanjanganException();
     }
     this->pesan = pesan;
@@ -26,12 +28,11 @@ Memo::Memo(string pesan, string untuk) {
 /* 
     Menyalin nilai pesan dan untuk ke objek lain
 */
-Memo& Memo::operator=(Memo& m) {
-    this->pesan = m.pesan;
-    this->untuk = m.untuk;
+Memo& Memo::operator=(Memo& obj) {
+    pesan = obj.pesan;
+    untuk = obj.untuk;
     return *this;
 }
-
 
 /*
     Mendapatkan nilai pesan
