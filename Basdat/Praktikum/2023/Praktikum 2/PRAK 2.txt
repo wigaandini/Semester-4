@@ -1,0 +1,90 @@
+PRAK 2
+
+1.
+SELECT country
+FROM customers
+GROUP BY customerNumber
+ORDER BY COUNT(customerNumber) DESC
+LIMIT 6;
+
+
+2.
+SELECT customerName, CONCAT(contactFirstName, ' ', contactLastName) AS contactName, country, paymentDate, amount
+FROM customers NATURAL JOIN payments
+WHERE YEAR(paymentDate) = 2005 AND MONTH(paymentDate) = 4;
+
+
+3.
+SELECT customerName, SUM(quantityOrdered) AS sumProduct
+FROM customers c NATURAL JOIN orders o NATURAL JOIN orderDetails od
+WHERE customerName LIKE '%Mini%'
+GROUP BY customerName
+ORDER BY sumProduct DESC;
+
+
+4.
+SELECT firstName, officeCode, COUNT(customerNumber) AS servedCustomer
+FROM employees e NATURAL JOIN customers c
+WHERE e.employeeNumber = c.salesRepEmployeeNumber
+GROUP BY e.employeeNumber
+HAVING servedCustomer > 7
+ORDER BY servedCustomer DESC;
+
+
+5.
+SELECT employeeNumber, CONCAT(firstName, ' ', lastName) AS employeeName, email, customerName, COUNT(orderNumber) AS countOrder
+FROM employees e NATURAL JOIN customers c NATURAL JOIN orders o
+WHERE e.employeeNumber = c.salesRepEmployeeNumber
+GROUP BY c.customerName
+ORDER BY countOrder DESC
+LIMIT 2;
+
+
+6.
+(SELECT customerName
+FROM customers c, payments p
+WHERE p.customerNumber = c.customerNumber
+GROUP BY c.customerNumber
+HAVING SUM(amount) > 50000)
+INTERSECT
+(SELECT customerName
+FROM customers c, employees e, offices o
+WHERE e.employeeNumber = c.salesRepEmployeeNumber AND e.officeCode = o.officeCode AND o.country = "Australia");
+
+
+7.
+SELECT DISTINCT od.orderNumber, p.productName, (priceEach - buyPrice)/buyPrice * 100 AS percentage
+FROM orders o, orderDetails od, products p
+WHERE p.productLine = "Classic Cars" AND od.productCode = p.productCode AND p.productLine = "Classic Cars"
+HAVING ((percentage BETWEEN 35 AND 36) OR (percentage BETWEEN 104 AND 105))
+ORDER BY percentage DESC;
+
+
+8.
+SELECT c.customerNumber, c.customerName, AVG(amount) as avgPayment, COUNT(checkNumber) as countPayment
+FROM customers c NATURAL JOIN payments p
+WHERE c.customerNumber = p.customerNumber
+GROUP BY p.customerNumber
+HAVING SUM(p.amount) > 500000
+ORDER BY countPayment DESC;
+
+
+9.
+SELECT customerName, CONCAT(contactFirstName, ' ', contactLastName) AS contactName, phone
+FROM customers 
+WHERE customerNumber NOT IN 
+(SELECT customerNumber FROM orders);
+
+
+10.
+SELECT DISTINCT customerNumber, customerName
+FROM customers NATURAL JOIN orders NATURAL JOIN orderDetails AS od NATURAL JOIN 
+(SELECT productCode FROM 
+(SELECT productCode, SUM(quantityOrdered) as sumOrders 
+FROM orderDetails
+GROUP BY productCode) AS A
+WHERE sumOrders BETWEEN 900 AND 950
+ORDER BY sumOrders DESC
+LIMIT 3) AS B;
+
+

@@ -1,0 +1,89 @@
+PRAK 2 SUSULAN
+
+1. 
+SELECT YEAR(paymentDate) AS yearPayment, COUNT(customerNumber) AS countCustomer, SUM(amount) as totalPayment
+FROM customers NATURAL JOIN payments
+GROUP BY yearPayment;
+
+2.
+SELECT lastName, COUNT(employeeNumber) AS count
+FROM employees
+GROUP BY lastName
+HAVING count > 1;
+
+
+3.
+SELECT productName, buyPrice
+FROM products
+WHERE buyPrice > (SELECT AVG(buyPrice) FROM products)
+ORDER BY buyPrice ASC;
+
+
+4.
+SELECT productCode, productName
+FROM products p
+WHERE p.productCode IN
+(SELECT od.productCode
+FROM payments p
+NATURAL JOIN customers c
+NATURAL JOIN orders o
+NATURAL JOIN orderDetails od
+GROUP BY c.customerNumber
+HAVING count(p.checkNumber) > 10)
+AND p.productLine LIKE '%Cars%';
+
+
+5.
+SELECT customerName, SUM(quantityOrdered) AS sumProductOrdered
+FROM customers c NATURAL JOIN orders o NATURAL JOIN orderDetails od
+WHERE customerName LIKE '%Gift%' 
+GROUP BY customerName
+ORDER BY sumProductOrdered;
+
+
+6.
+SELECT employeeNumber, CONCAT(firstName, ' ', lastName) as employeeName, email, customerName, COUNT(orderNumber) AS countOrder
+FROM employees e NATURAL JOIN customers c NATURAL JOIN orders o
+WHERE e.employeeNumber = c.salesRepEmployeeNumber and o.customerNumber = c.customerNumber
+GROUP BY customerName
+HAVING countOrder >= 5;
+
+
+7.
+orderDate 2004
+SELECT DISTINCT orderNumber, productName, (priceEach - buyPrice)/buyPrice * 100 AS profitPercentage
+FROM products p NATURAL JOIN orderDetails od NATURAL JOIN orders o
+WHERE p.productLine = "Vintage Cars" AND YEAR(orderDate) = 2004
+HAVING profitPercentage BETWEEN 106 AND 107
+ORDER BY profitPercentage DESC;
+
+paymentDate 2004
+SELECT DISTINCT orderNumber, productName, (priceEach - buyPrice)/buyPrice * 100 AS profitPercentage
+FROM products p NATURAL JOIN orderDetails od NATURAL JOIN orders o NATURAL JOIN payments py
+WHERE p.productLine = "Vintage Cars" AND YEAR(paymentDate) = 2004
+HAVING profitPercentage BETWEEN 106 AND 107
+ORDER BY profitPercentage DESC;
+
+
+8.
+SELECT customerName 
+FROM customers 
+WHERE customerName NOT IN 
+(SELECT customerName 
+FROM customers c NATURAL JOIN orders o NATURAL JOIN orderDetails od NATURAL JOIN products p
+WHERE p.productVendor = "Min Lin Diecast");
+
+
+9.
+SELECT productName
+FROM products p
+WHERE p.buyPrice > ALL 
+(SELECT priceEach
+FROM customers c NATURAL JOIN orders o NATURAL JOIN orderDetails od
+WHERE c.phone = "3105552373");
+
+
+10.
+WITH X(value) AS (SELECT AVG(creditLimit) FROM customers c1 WHERE c1.country = "USA") SELECT c.customerNumber, customerName, creditLimit, CONCAT(firstName, ' ', lastName) as employeeName
+FROM customers c NATURAL JOIN employees e NATURAL JOIN X 
+WHERE c.salesRepEmployeeNumber = e.employeeNumber AND c.creditLimit < X.value;

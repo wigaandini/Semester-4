@@ -1,0 +1,137 @@
+PRAK 3 SUSULAN
+
+1.
+SELECT c.customerNumber
+FROM customers c, payments p
+WHERE c.customerNumber = p.customerNumber
+AND YEAR(paymentDate) = 2004
+AND (amount > 2000 AND amount < 50000)
+ORDER BY amount DESC;
+
+
+2.
+CREATE VIEW inprocess_order AS
+(SELECT CONCAT(contactFirstName," ",contactLastName) as contact_name, c.phone, o.orderDate, p.productName, o.status
+FROM customers c, orders o, orderDetails od, products p
+WHERE c.customerNumber = o.customerNumber
+AND o.orderNumber = od.orderNumber
+AND od.productCode = p.productCode
+AND status = "In Process"
+ORDER BY orderDate DESC);
+
+
+3.
+show:
+SELECT orderNumber, c.customerNumber, status 
+FROM orders o, customers c, payments p
+WHERE c.customerNumber = o.customerNumber
+AND c.customerNumber = p.customerNumber
+AND c.country = "France"
+AND p.amount > 45000
+GROUP BY customerNumber
+HAVING COUNT(p.customerNumber) > 1
+AND status = "Shipped";
+
+query:
+UPDATE orders
+SET status = "Shipped"
+WHERE customerNumber IN
+(SELECT customerNumber
+FROM orders 
+WHERE customerNumber IN 
+(SELECT c.customerNumber
+FROM customers c, payments p
+WHERE c.customerNumber = p.customerNumber 
+AND c.country = "France"
+AND p.amount > 45000
+GROUP BY customerNumber
+HAVING COUNT(p.customerNumber) > 1))
+AND status = "In Process";
+
+
+4.
+INSERT INTO products (productCode, productName, productLine, productScale,
+productVendor, productDescription, quantityInStock, buyPrice, MSRP) 
+VALUES ('S135_182', '2007 Honda Beat', 'Motorcycles', '1:18', 'Warga Basdat
+Collectibles', 'Miniatur Honda Beat', 25, 23.23, 50.50);
+
+SELECT * FROM products;
+
+
+5.
+add column:
+ALTER TABLE customers ADD COLUMN member VARCHAR(10) DEFAULT NULL;
+
+update member:
+UPDATE customers c1,
+(SELECT c2.customerNumber, COALESCE(SUM(priceEach * quantityOrdered), 0) AS total
+FROM customers c2 LEFT JOIN orders o ON c2.customerNumber = o.customerNumber
+LEFT JOIN orderdetails od ON o.orderNumber = od.orderNumber
+GROUP BY c2.customerNumber)
+AS TEMP
+SET member =
+CASE
+WHEN total > 500000 then "Platinum"
+WHEN total > 100000 then "Gold"
+WHEN total > 50000 then "Silver"
+ELSE "Bronze"
+END
+WHERE c1.customerNumber = temp.customerNumber;
+
+show:
+SELECT member, count(*) AS total_cust FROM customers GROUP BY member;
+
+
+6.
+temp table:
+CREATE TEMPORARY TABLE delCust AS
+(SELECT orderNumber 
+FROM orders o, customers c
+WHERE o.customerNumber = c.customerNumber
+AND c.city = "Auckland"
+AND YEAR(o.shippedDate) < 2005);
+
+delete:
+DELETE FROM orderDetails 
+WHERE orderNumber IN 
+(SELECT orderNumber FROM delCust);
+
+DELETE FROM orders
+WHERE orderNumber IN (SELECT orderNumber FROM delCust);
+
+show:
+SELECT o.orderNumber, productCode, shippedDate
+FROM orders o, orderDetails od, customers c
+WHERE o.orderNumber = od.orderNumber
+AND o.customerNumber = c.customerNumber
+AND c.city = "Auckland";
+
+
+7.
+show:
+describe producDiscontinueCode;
+
+query:
+CREATE TABLE productDiscontinueCode(
+productDiscontinueCode VARCHAR(15),
+productName VARCHAR(70),
+productLine VARCHAR(50),
+productScale VARCHAR(10),
+productVendor VARCHAR(50),
+productDescription TEXT,
+quantityInStock SMALLINT,
+buyPrice DECIMAL(10,2),
+MSRP DECIMAL(10,2),
+PRIMARY KEY(productDiscontinueCode),
+FOREIGN KEY(productDiscontinueCode) REFERENCES products(productCode))
+COLLATE=latin1_swedish_ci;
+
+
+8.
+show:
+describe offices;
+
+add col:
+ALTER TABLE offices ADD COLUMN connectionString VARCHAR(255) NOT NULL
+DEFAULT 'Host=localhost:5432; Database=office; Username=postgres; Password=root';
+

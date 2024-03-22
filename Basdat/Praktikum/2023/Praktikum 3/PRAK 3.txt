@@ -1,0 +1,127 @@
+PRAK 3
+
+
+"C:\Program Files\MariaDB 11.4\bin\mariadb" -u root -p
+
+
+1.
+SELECT customerName, amount
+FROM customers NATURAL JOIN payments
+WHERE YEAR(paymentDate) = 2003 
+AND (amount < 10000 OR amount > 50000) 
+ORDER BY amount;
+
+
+2.
+CREATE VIEW cancelled_order AS
+(SELECT CONCAT(contactFirstName," ",contactLastName) as contact_name, phone, orderDate, productName, 
+status, comments
+FROM customers NATURAL JOIN orders NATURAL JOIN orderDetails NATURAL JOIN products 
+WHERE status = "Cancelled"
+ORDER BY orderDate DESC);
+
+
+3. 
+query:
+UPDATE employees 
+SET jobTitle = "Sales Manager"
+WHERE employeeNumber in 
+(SELECT employeeNumber
+FROM employees e INNER JOIN customers c on e.employeeNumber = c.salesRepEmployeeNumber 
+NATURAL INNER JOIN payments p
+WHERE c.country = 'USA'
+GROUP BY employeeNumber
+HAVING SUM(amount) > 500000);
+
+show:
+SELECT *
+FROM employees as e
+INNER JOIN customers as c ON e.employeeNumber = c.salesRepEmployeeNumber NATURAL INNER JOIN payments p
+WHERE c.country = 'USA'
+GROUP BY e.employeeNumber
+HAVING SUM(p.amount) > 500000;
+
+
+
+
+4.
+query:
+INSERT INTO offices
+VALUES ("8", "Bandung", "+62 831 8243 4940", "Jl. Ganesha No. 10", "Labtek V", "NULL", "Indonesia", "40132", "APAC");
+
+show:
+SELECT * FROM offices;
+
+
+5.
+add email:
+ALTER TABLE customers
+ADD COLUMN email varchar(255) DEFAULT NULL;
+
+update email:
+UPDATE customers
+SET email = REPLACE(LOWER(CONCAT(contactFirstName,contactLastName,"@gmail.com"))," ","");
+
+
+6.
+show employee:
+SELECT customerName, employeeNumber
+FROM employees e, customers c, offices o
+WHERE o.city = "London"
+AND e.employeeNumber = c.salesRepEmployeeNumber
+AND e.officeCode = o.officeCode;
+
+table:
+CREATE TEMPORARY TABLE firedEmployee AS (
+SELECT DISTINCT employeeNumber
+FROM employees e1, customers c1, offices o1
+WHERE o1.city = "London"
+AND e1.employeeNumber = c1.salesRepEmployeeNumber
+AND e1.officeCode = o1.officeCode
+AND e1.employeeNumber NOT IN (
+SELECT employeeNumber
+FROM employees e, customers c
+WHERE e.employeeNumber = c.salesRepEmployeeNumber
+AND c.city = "Liverpool"
+AND o.city = "London"));
+
+update:
+UPDATE customers
+SET salesRepEmployeeNumber = NULL 
+WHERE salesRepEmployeeNumber IN (SELECT employeeNumber FROM firedEmployee);
+
+delete:
+DELETE FROM employees WHERE employeeNumber IN (SELECT employeeNumber FROM
+firedEmployee);
+
+
+7.
+CREATE TABLE warehouse(
+warehouseCode INT AUTO_INCREMENT,
+warehouseName VARCHAR(50) NOT NULL,
+managerName VARCHAR(255) NOT NULL,
+addressLine VARCHAR(255) NOT NULL,
+city VARCHAR(255) NOT NULL,
+country VARCHAR(255) NOT NULL,
+PRIMARY KEY (warehouseCode)
+);
+
+CREATE TABLE manufacture(
+productCode VARCHAR(15) NOT NULL,
+warehouseCode INT(11) NOT NULL,
+PRIMARY KEY(warehouseCode, productCode),
+FOREIGN KEY(warehouseCode) references warehouse(warehouseCode),
+FOREIGN KEY(productCode) references products(productCode))
+COLLATE = latin1_swedish_ci;
+
+describe warehouse;
+describe manufacture;
+
+
+8.
+show:
+describe productLines;
+
+query:
+ALTER TABLE productLines RENAME COLUMN image TO imageUrl;
+ALTER TABLE productLines MODIFY COLUMN imageUrl VARCHAR(255);
