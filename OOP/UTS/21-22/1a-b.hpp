@@ -20,7 +20,7 @@ class Hotel {
         void set_bintang(string bintang);
         string get_bintang() const;
         int get_age() const;
-        virtual void displayInfo();
+        void displayInfo();
         int rate();        
 };
 
@@ -34,7 +34,7 @@ class bintang_empat : public Hotel {
         ~bintang_empat();
         void set_star(int star);
         int get_star() const;
-        void displayInfo() override;
+        void displayInfo();
 };
 
 
@@ -48,7 +48,7 @@ class bintang_lima : public Hotel {
         void set_facility(int facility);
         int get_facility() const;
         int calculateFacility();
-        void displayInfo() override;
+        void displayInfo();
 };
 
 #endif
